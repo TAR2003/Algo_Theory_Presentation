@@ -620,32 +620,41 @@
 		\]
 	\end{tcolorbox}
 
-	\vspace{0.4em}
 	\begin{columns}[T]
 		\column{0.33\textwidth}
 		\begin{tcolorbox}[redbox, title={Exponential (Old)}]
-			\centering $2^n$\\[0.3em]
+			\centering $2^n$\\
 			\small For $n=100$:\\$\approx 10^{30}$ steps
 		\end{tcolorbox}
 
 		\column{0.33\textwidth}
 		\begin{tcolorbox}[defbox, title={Quasi-Poly (Babai)}]
-			\centering $2^{(\log n)^c}$\\[0.3em]
+			\centering $2^{(\log n)^c}$\\
 			\small For $n=100$:\\$\approx 10^{7}$ steps
 		\end{tcolorbox}
 
 		\column{0.33\textwidth}
 		\begin{tcolorbox}[greenbox, title={Polynomial (Goal)}]
-			\centering $n^k$\\[0.3em]
+			\centering $n^k$\\
 			\small For $n=100$:\\$\approx 10^{6}$ steps
 		\end{tcolorbox}
 	\end{columns}
 
-	\vspace{0.5em}
 	\begin{tcolorbox}[keybox]
 		\centering
 		\textbf{Exponential} $\;\gg\;$ \textbf{Quasi-Polynomial} $\;\gg\;$ \textbf{Polynomial}\\[0.2em]
 		Babai's result is the \textit{closest} GI has ever been to the "Easy" bucket.
+	\end{tcolorbox}
+
+\end{frame}
+
+%% ── Slide: Explore More (External resource) ─────────────────────
+\begin{frame}{Explore More: Visualize GI Complexity}
+	\begin{tcolorbox}[greenbox, title={Explore More}]
+		\small
+		For an interactive visualization of Graph Isomorphism complexity (including Babai's breakthrough), visit:
+		\\
+		\href{https://graph-isomorphism-complexity.netlify.app/}{https://graph-isomorphism-complexity.netlify.app/}
 	\end{tcolorbox}
 \end{frame}
 
@@ -803,15 +812,15 @@
 
 		% Graph H
 		\node[font=\bfseries] at (4.2, 3.2) {Graph $H$};
-		\node[gnodew] (h1) at (3.5,2.5){};
-		\node[gnodeg] (h2) at (5.2,2.5){};
-		\node[gnodew] (h3) at (5.8,1.0){};
-		\node[gnodeg] (h4) at (3.8,1.0){};
+		\node[gnodeg] (h1) at (3.5,2.5){};
+		\node[gnodew] (h2) at (5.2,2.5){};
+		\node[gnodeg] (h3) at (5.8,1.0){};
+		\node[gnodew] (h4) at (3.8,1.0){};
 		\draw[gedge](h1)--(h2)(h2)--(h3)(h3)--(h4)(h4)--(h1)(h1)--(h3);
-		\node[font=\tiny, below=1pt] at (h1.south) {deg=2};
-		\node[font=\tiny, below=1pt] at (h3.south) {deg=2};
-		\node[font=\tiny, right=1pt] at (h2.east)  {deg=3};
-		\node[font=\tiny, left=1pt]  at (h4.west)  {deg=3};
+		\node[font=\tiny, below=1pt] at (h1.south) {deg=3};
+		\node[font=\tiny, below=1pt] at (h3.south) {deg=3};
+		\node[font=\tiny, right=1pt] at (h2.east)  {deg=2};
+		\node[font=\tiny, left=1pt]  at (h4.west)  {deg=2};
 
 		% Legend
 		\node[gnodew, minimum size=5mm] at (1.5, -0.2){};
@@ -834,44 +843,52 @@
 		\textbf{Rule:} Update each node's colour based on \textit{its own colour + sorted colours of neighbours}.
 
 		\vspace{0.5em}
-		\begin{tcolorbox}[defbox, title={Example Update}]
-			A \textcolor{mBlue}{\textbf{Blue}} node with neighbours\\
-			\textcolor{mRed}{\textbf{Red}}, \textcolor{mRed}{\textbf{Red}}\\[0.2em]
-			$\Rightarrow$ gets new colour \textcolor{mPurple}{\textbf{Purple}}
+		\begin{tcolorbox}[colback=blue!5, colframe=blue!50, title={Example Update }]
+			Node \textcolor{blue}{\textbf{Blue}} with neighbours\\
+			\{\textcolor{red}{\textbf{Red}}, \textcolor{red}{\textbf{Red}}\} $\Rightarrow$ New color: \textcolor{purple}{\textbf{Purple}}
 
 			\vspace{0.3em}
-			A \textcolor{mBlue}{\textbf{Blue}} node with neighbours\\
-			\textcolor{mRed}{\textbf{Red}}, \textcolor{mBlue}{\textbf{Blue}}\\[0.2em]
-			$\Rightarrow$ gets new colour \textcolor{mGreen}{\textbf{Green}}
+			Node \textcolor{blue}{\textbf{Blue}} with neighbours\\
+			\{\textcolor{red}{\textbf{Red}}, \textcolor{blue}{\textbf{Blue}}\} $\Rightarrow$ New color: \textcolor{green!60!black}{\textbf{Green}}
 		\end{tcolorbox}
 
 		\vspace{0.3em}
-		Repeat until colours \textbf{stabilise}.
+		Repeat until colours \textbf{stabilise}[cite: 403].
 
 		\column{0.42\textwidth}
 		\centering
-		\begin{tikzpicture}[scale=0.85]
-			% Round 0
-			\node[font=\small\bfseries] at (0, 3.5) {Round 0};
-			\node[gnodew, minimum size=6mm] (r0a) at (-0.8, 2.8) {};
-			\node[gnodeg, minimum size=6mm] (r0b) at (0.8, 2.8)  {};
-			\node[gnodew, minimum size=6mm] (r0c) at (-0.8, 1.8) {};
-			\node[gnodeg, minimum size=6mm] (r0d) at (0.8, 1.8)  {};
-			\draw[gedge](r0a)--(r0b)(r0b)--(r0d)(r0d)--(r0c)(r0c)--(r0a)(r0b)--(r0c);
+		\begin{tikzpicture}[scale=0.9,
+				blueNode/.style={circle, draw, fill=blue!30, minimum size=6mm},
+				redNode/.style={circle, draw, fill=red!30, minimum size=6mm},
+				purpleNode/.style={circle, draw, fill=purple!40, minimum size=6mm},
+				greenNode/.style={circle, draw, fill=green!40, minimum size=6mm}]
 
-			\draw[arrow, mAccent] (1.3, 2.3) -- (1.9, 2.3)
-			node[right, font=\small]{refine};
+			% Round 0 - Using Blue and Red to match your rule box
+			\node[font=\small\bfseries] at (0, 3.5) {Round n};
+			\node[blueNode] (n1) at (-0.8, 2.8) {}; % Blue
+			\node[redNode] (n2) at (0.8, 2.8)  {}; % Red
+			\node[blueNode] (n3) at (-0.8, 1.8) {}; % Blue
+			\node[redNode] (n4) at (0.8, 1.8)  {}; % Red
 
-			% Round 1
-			\node[font=\small\bfseries] at (3.4, 3.5) {Round 1};
-			\node[gnodem, minimum size=6mm] (r1a) at (2.6, 2.8) {};
-			\node[gnodey, minimum size=6mm] (r1b) at (4.2, 2.8) {};
-			\node[gnodem, minimum size=6mm] (r1c) at (2.6, 1.8) {};
-			\node[gnodey, minimum size=6mm] (r1d) at (4.2, 1.8) {};
-			\draw[gedge](r1a)--(r1b)(r1b)--(r1d)(r1d)--(r1c)(r1c)--(r1a)(r1b)--(r1c);
+			\draw (n1)--(n2) (n2)--(n4) (n4)--(n3) (n3)--(n1) (n2)--(n3);
+
+			\draw[->, thick, blue!50] (1.3, 2.3) -- (1.9, 2.3) node[midway, above, font=\tiny]{refine};
+
+			% Round 1 - Applying the rules
+			\node[font=\small\bfseries] at (3.4, 3.5) {Round n+1};
+			% n1 was Blue with neighbors {Red, Blue} -> Green
+			\node[greenNode] (r1) at (2.6, 2.8) {};
+			% n2 was Red (needs a Red rule, but for logic we show a change)
+			\node[circle, draw, fill=orange!30, minimum size=6mm] (r2) at (4.2, 2.8) {};
+			% n3 was Blue with neighbors {Red, Red, Blue} -> different shade
+			\node[purpleNode] (r3) at (2.6, 1.8) {};
+			% n4 was Red
+			\node[circle, draw, fill=yellow!30, minimum size=6mm] (r4) at (4.2, 1.8) {};
+
+			\draw (r1)--(r2) (r2)--(r4) (r4)--(r3) (r3)--(r1) (r2)--(r3);
 		\end{tikzpicture}
 		\vspace{0.3em}
-		\small Colours changed: refinement continues.
+		\small \textit{Nodes change shade because their neighbors look different!}
 	\end{columns}
 \end{frame}
 
@@ -903,14 +920,22 @@
 			minimum height=0.7cm, font=\small\bfseries, below=0.6cm of refine, xshift=5.5cm] (stable)
 		{Stable?};
 
+
+
+		% 1. Simple connection
 		\draw[arrow] (init) -- (refine);
-		\draw[arrow] (refine) -- (check);
-		\draw[arrow] (check.south west) -- (no.north)
-		node[midway, left, font=\tiny]{No};
-		\draw[arrow] (check.south east) -- (maybe.north)
-		node[midway, right, font=\tiny]{Yes};
-		\draw[arrow] (refine.east) -- ++(0.5,0) |- (stable.west);
-		\draw[arrow] (stable.south) |- node[right, font=\tiny, pos=0.75]{Not yet} (refine.east);
+
+		% 2. The Loop: Refine <-> Stable
+		% Use 'bend' to prevent the lines from being on top of each other
+		\draw[arrow] (refine) to[bend left=10] (stable);
+		\draw[arrow] (stable) to[bend right=30] node[above, font=\tiny] {Not yet} (refine);
+
+		% 3. Stable to Check
+		\draw[arrow] (stable) -- node[right, font=\tiny] {Yes} (check);
+
+		% 4. Decision splits (Diagonal arrows)
+		\draw[arrow] (check) -- node[midway, left, font=\tiny] {No} (no);
+		\draw[arrow] (check) -- node[midway, right, font=\tiny] {Yes} (maybe);
 	\end{tikzpicture}
 \end{frame}
 

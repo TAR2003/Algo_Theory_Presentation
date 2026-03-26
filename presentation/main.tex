@@ -591,7 +591,7 @@
 		\column{0.55\textwidth}
 		\begin{tcolorbox}[keybox, title={\faStar\; The Announcement}]
 			\textbf{László Babai} (University of Chicago) announced a\\[0.3em]
-			\centering\textbf{Quasi-Polynomial}\\[0.3em]
+			\textbf{Quasi-Polynomial}\\[0.3em]
 			\normalsize time algorithm for Graph Isomorphism.
 		\end{tcolorbox}
 
@@ -722,22 +722,6 @@
 			By early 2017: community consensus — \textit{the proof is correct}.
 		\end{tcolorbox}
 
-		\column{0.5\textwidth}
-		\centering
-		\begin{tikzpicture}[scale=0.85]
-			\foreach \y/\col/\lab in {
-			0/mGreen/{2017: Proof Validated},
-			1/mAccent/{Jan 2017: Fix Submitted},
-			2/mRed/{Jan 2017: Gap Found},
-			3/mBlue/{Nov 2015: Paper Announced}
-			}{
-			\filldraw[\col] (-0.08, \y*1.0) rectangle (0.08, \y*1.0+0.06);
-			\fill[\col] (0, \y*1.0+0.03) circle (4pt);
-			\node[right=0.3cm, font=\small, align=left] at (0.1, \y*1.0+0.03) {\lab};
-			\draw[\col!40, thick] (0, \y*1.0+0.03) -- (0.1, \y*1.0+0.03);
-			}
-			\draw[mGray, thick] (0,-0.1) -- (0, 3.1);
-		\end{tikzpicture}
 	\end{columns}
 \end{frame}
 

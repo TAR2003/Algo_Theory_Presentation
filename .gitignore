@@ -9,6 +9,9 @@
 *.snm
 *.nav
 *.vrb
+*.bbl
+*.blg
+*.synctex.gz
 
 # latexmk file locks and temp
 *.lock

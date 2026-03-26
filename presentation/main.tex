@@ -8,6 +8,7 @@
 \usetheme[progressbar=frametitle, block=fill, numbering=fraction]{metropolis}
 
 %% ── Packages ────────────────────────────────────────────────────
+\usepackage{natbib}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta,
                 decorations.pathreplacing, shapes.geometric,
@@ -94,10 +95,10 @@
 }
 
 %% ── Meta-data ───────────────────────────────────────────────────
-\title{\textbf{The Complexity of\\Graph Isomorphism}}
+\title{\textbf{The Complexity Status of\\Graph Isomorphism}}
 \subtitle{From Factorial Brute Force to Quasi-Polynomial Breakthrough}
-\author{Presented by: \textit{[Your Name]}}
-\institute{Department of Computer Science}
+\author{Presented by: \textit{Theory Presentation Team}}
+\institute{CSE, BUET}
 \date{\today}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -405,7 +406,7 @@
 
 %% ── Slide: Schöning Evidence ────────────────────────────────────
 \begin{frame}{Evidence: GI Cannot Be NP-Complete}
-	\begin{tcolorbox}[defbox, title={\faFlask\; Schöning's Theorem (1988)}]
+	\begin{tcolorbox}[defbox, title={\faFlask\; Schöning's Theorem (1988) \cite{Schoening1988}}]
 		If \textbf{Graph Isomorphism} were NP-Complete,\\
 		then the \textbf{Polynomial Hierarchy} would \alert{collapse}.
 	\end{tcolorbox}
@@ -592,12 +593,12 @@
 		\begin{tcolorbox}[keybox, title={\faStar\; The Announcement}]
 			\textbf{László Babai} (University of Chicago) announced a\\[0.3em]
 			\textbf{Quasi-Polynomial}\\[0.3em]
-			\normalsize time algorithm for Graph Isomorphism.
+			\normalsize time algorithm for Graph Isomorphism \cite{Babai2015}.
 		\end{tcolorbox}
 
 		\vspace{0.5em}
 		\begin{itemize}
-			\item Previous best: Luks (1983) — sub-exponential.
+			\item Previous best: Luks (1983) \cite{Luks1983} — sub-exponential.
 			\item Babai improved it by an \textit{exponential factor}.
 			\item Considered one of the greatest TCS results of the 21st century.
 		\end{itemize}
@@ -721,7 +722,7 @@
 	\begin{columns}[T]
 		\column{0.5\textwidth}
 		\begin{tcolorbox}[keybox, title={\faExclamationTriangle\; The Gap (Jan 2017)}]
-			Harald Helfgott found a \textit{gap} (error) in one of Babai's key lemmas.\\[0.3em]
+			Harald Helfgott found a \textit{gap} (error) in one of Babai's key lemmas \cite{Helfgott2017}.\\[0.3em]
 			The community held its breath\ldots
 		\end{tcolorbox}
 
@@ -766,7 +767,7 @@
 \begin{frame}{Real-World Solution: The \alert{Colour Refinement} Trick}
 	\begin{columns}[T]
 		\column{0.55\textwidth}
-		\begin{tcolorbox}[defbox, title={Weisfeiler-Lehman (WL) Test}]
+		\begin{tcolorbox}[defbox, title={Weisfeiler-Lehman (WL) Test \cite{Weisfeiler1968}}]
 			Instead of checking structure directly,\\
 			we \textbf{colour} nodes based on their neighbourhood.\\[0.3em]
 			If two graphs produce different colour palettes $\Rightarrow$ \textbf{not isomorphic}.
@@ -789,7 +790,7 @@
 			\node[gnodew] (f) at (-0.7,0.8){};
 			\draw[gedge](a)--(b)(b)--(c)(c)--(d)(d)--(e)(e)--(f)(f)--(a);
 			\draw[gedge](a)--(d)(b)--(e)(c)--(f);
-			\node[below=0.3cm of d]{\small Petersen graph};
+			\node[below=0.3cm of d]{\small Petersen graph \cite{Petersen1891}};
 		\end{tikzpicture}
 	\end{columns}
 \end{frame}
@@ -883,7 +884,7 @@
 			% n3 was Blue with neighbors {Red, Red, Blue} -> different shade
 			\node[purpleNode] (r3) at (2.6, 1.8) {};
 			% n4 was Red
-			\node[circle, draw, fill=yellow!30, minimum size=6mm] (r4) at (4.2, 1.8) {};
+			\node[greenNode] (r4) at (4.2, 1.8) {};
 
 			\draw (r1)--(r2) (r2)--(r4) (r4)--(r3) (r3)--(r1) (r2)--(r3);
 		\end{tikzpicture}
@@ -954,7 +955,7 @@
 		\column{0.48\textwidth}
 		\begin{tcolorbox}[redbox, title={\faThumbsDown\; Weakness}]
 			\begin{itemize}
-				\item Fails on \textbf{Cai-Fürer-Immerman (CFI) graphs}.
+				\item Fails on \textbf{Cai-Fürer-Immerman (CFI) graphs} \cite{CaiFurerImmerman1989}.
 				\item Highly regular graphs with no distinguishing local structure.
 				\item WL says "same" but they are \textit{different}!
 			\end{itemize}
@@ -1001,6 +1002,8 @@
 	\vspace{0.8em}
 	\begin{tcolorbox}[keybox]
 		Each step is a \textit{massive} improvement. The 2015 jump was the most dramatic in 30 years.
+		\newline
+		\small References: \cite{Luks1980}, \cite{Luks1983}, \cite{Babai1992}, \cite{Babai2015}
 	\end{tcolorbox}
 \end{frame}
 
@@ -1051,8 +1054,8 @@
 		\begin{tcolorbox}[greenbox, title={\faCheck\; Polynomial Cases}]
 			\begin{itemize}
 				\item \textbf{Trees} — $O(n \log n)$
-				\item \textbf{Planar graphs} — $O(n)$ (Hopcroft \& Wong 1974)
-				\item \textbf{Bounded degree} — polynomial (Luks 1980)
+				\item \textbf{Planar graphs} — $O(n)$ \cite{Hopcroft1974}
+				\item \textbf{Bounded degree} — polynomial \cite{Luks1980}
 				\item \textbf{Interval graphs}
 				\item \textbf{Bounded genus graphs}
 			\end{itemize}
@@ -1395,8 +1398,14 @@
 \begin{frame}[standout]
 	\Huge \textbf{Thank You!}\\[1em]
 	\large Questions?\\[1em]
-	
+
 \end{frame}
 
+%% ── Bibliography ────────────────────────────────────────────────
+\begin{frame}[allowframebreaks]{References}
+	\small
+	\bibliographystyle{apalike}
+	\bibliography{main}
+\end{frame}
 
 \end{document}

@@ -566,10 +566,10 @@
 		\centering
 		\begin{tikzpicture}[scale=0.95]
 			% 3-regular graph (K4)
-			\node[gnodew] (a) at (0,1.5)  {A};
+			\node[gnodew] (a) at (0,2.0)  {A};
 			\node[gnodew] (b) at (1.5,1.5){B};
 			\node[gnodew] (c) at (1.5,0)  {C};
-			\node[gnodew] (d) at (0,0)    {D};
+			\node[gnodew] (d) at (0,-0.5)    {D};
 			\draw[gedge](a)--(b)(b)--(c)(c)--(d)(d)--(a)(a)--(c)(b)--(d);
 			\node[below=0.15cm of d]{\small $K_4$: every node has degree 3};
 

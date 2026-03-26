@@ -18,3 +18,9 @@
 # generated directories
 _build/
 
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+

@@ -9,7 +9,6 @@
 *.snm
 *.nav
 *.vrb
-*.pdf
 
 # latexmk file locks and temp
 *.lock

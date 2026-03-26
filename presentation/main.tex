@@ -94,9 +94,9 @@
 }
 
 %% ── Meta-data ───────────────────────────────────────────────────
-\title{\textbf{The Complexity Status of\\Graph Isomorphism Problem}}
+\title{\textbf{The Complexity of\\Graph Isomorphism}}
 \subtitle{From Factorial Brute Force to Quasi-Polynomial Breakthrough}
-\author{Presented by: \textit{[Topic No 7]}}
+\author{Presented by: \textit{[Your Name]}}
 \institute{Department of Computer Science}
 \date{\today}
 
@@ -591,7 +591,7 @@
 		\column{0.55\textwidth}
 		\begin{tcolorbox}[keybox, title={\faStar\; The Announcement}]
 			\textbf{László Babai} (University of Chicago) announced a\\[0.3em]
-			\Huge\centering\textbf{Quasi-Polynomial}\\[0.3em]
+			\centering\textbf{Quasi-Polynomial}\\[0.3em]
 			\normalsize time algorithm for Graph Isomorphism.
 		\end{tcolorbox}
 
@@ -604,17 +604,10 @@
 
 		\column{0.42\textwidth}
 		\centering
-		\begin{tikzpicture}
-			\node[draw=mAccent, very thick, rounded corners=8pt,
-				fill=mAccent!10, minimum width=3.8cm, minimum height=4.5cm,
-				align=center, font=\small] (card) {
-
-			};
-			\node[align=center, font=\Large\bfseries, text=mDark] at (card.center)
-			{László\\Babai\\[0.5em]\normalsize\textcolor{mGray}{Univ. of Chicago}};
-			\draw[mAccent, very thick] (card.north west) rectangle (card.south east);
-			\node[below=0.1cm of card, font=\small\itshape]{Graph Isomorphism Expert};
-		\end{tikzpicture}
+		\includegraphics[width=3.5cm, height=4.2cm]{images/babai.jpg}\\[0.3em]
+		\textbf{László Babai}\\
+		\small\textcolor{mGray}{Univ. of Chicago}\\
+		\textit{Computer Scientist}
 	\end{columns}
 \end{frame}
 
@@ -1398,8 +1391,8 @@
 	\Huge \textbf{Thank You!}\\[1em]
 	\large Questions?\\[1em]
 	\normalsize
-	\faEnvelope\ \texttt{[tawkir2003@gmail.com]}\\[0.4em]
-	\faGithub\ \texttt{github.com/TAR2003/Algo\_Theory\_Presentation}
+	\faEnvelope\ \texttt{[your.email@university.edu]}\\[0.4em]
+	\faGithub\ \texttt{github.com/yourprofile}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1448,42 +1441,5 @@
 		\bottomrule
 	\end{tabular}
 \end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% REFERENCES
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}{References}
-	\footnotesize
-	\begin{thebibliography}{99}
-
-		\bibitem[Babai, 2016]{Babai2016}
-		L.~Babai.
-		\newblock ``Graph Isomorphism in Quasipolynomial Time.''
-		\newblock \textit{STOC '16: Proceedings of the 48th Annual ACM SIGACT Symposium}, 2016.
-		\newblock \textbf{Breakthrough: } $2^{O((\log n)^c)}$ quasi-polynomial algorithm.
-
-		\bibitem[Weisfeiler \& Lehman, 1968]{WL1968}
-		B.~Weisfeiler \& A.~A.~Lehman.
-		\newblock ``A Reduction of a Graph to a Canonical Form and an Algebra Arising During this Reduction.''
-		\newblock \textit{Nauchno-Technicheskaya Informatsia}, 2(9):12--16, 1968.
-		\newblock Foundational: Classic WL test for graph isomorphism.
-
-		\bibitem[Schöning, 1988]{Schoning1988}
-		U.~Schöning.
-		\newblock ``Graph Isomorphism is in the Low Hierarchy.''
-		\newblock \textit{Journal of the ACM}, 35(3):461--467, 1988.
-		\newblock Proof: GI not NP-Complete (unless Polynomial Hierarchy collapses).
-
-		\bibitem[Luks, 1982]{Luks1982}
-		E.~M.~Luks.
-		\newblock ``Isomorphism of Graphs of Bounded Valence Can Be Tested in Polynomial Time.''
-		\newblock \textit{Journal of Computer and System Sciences}, 25(3):295--305, 1982.
-		\newblock Polynomial algorithm for bounded-degree graphs.
-
-	\end{thebibliography}
-\end{frame}
-
-\end{document}
 
 \end{document}

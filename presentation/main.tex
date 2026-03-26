@@ -1310,11 +1310,11 @@
 		\draw[very thick, mGray] (0,0) -- (12,0);
 		\foreach \x/\y/\col/\lab in {
 		0/0.5/mRed/{1960s: Problem defined},
-		2.5/0.5/mPurple/{1974: Planar GI solved},
+		2.5/1.5/mPurple/{1974: Planar GI solved},
 		4.5/0.5/mBlue/{1980: Luks -- bounded degree},
-		6.5/0.5/mGreen/{1988: Schöning -- not NP-C},
+		6.5/1.5/mGreen/{1988: Schöning -- not NP-C},
 		8.5/0.5/mAccent/{1992: Sub-exp algorithm},
-		11/0.5/mGreen!70!black/{2015: Babai Breakthrough!}
+		11/1.5/mGreen!70!black/{2015: Babai Breakthrough!}
 		}{
 		\fill[\col] (\x, 0) circle (4pt);
 		\draw[\col, thick] (\x,0) -- (\x, \y);
@@ -1332,12 +1332,10 @@
 			Determining if two graphs share the same structure via a bijection $f: V_G \to V_H$.
 		\end{tcolorbox}
 
-		\vspace{0.4em}
 		\begin{tcolorbox}[keybox, title={Where does it live?}]
 			NP-Intermediate — harder than P, almost certainly easier than NP-Complete.
 		\end{tcolorbox}
 
-		\vspace{0.4em}
 		\begin{tcolorbox}[greenbox, title={Best algorithm?}]
 			Babai (2015): $2^{O((\log n)^c)}$ — quasi-polynomial.
 		\end{tcolorbox}
@@ -1347,12 +1345,10 @@
 			Weisfeiler-Lehman colour refinement — polynomial, works on almost all real graphs.
 		\end{tcolorbox}
 
-		\vspace{0.4em}
 		\begin{tcolorbox}[redbox, title={Open question?}]
 			Is GI $\in$ P? Nobody knows. Still an active frontier.
 		\end{tcolorbox}
 
-		\vspace{0.4em}
 		\begin{tcolorbox}[keybox, title={Real-world uses?}]
 			Chemistry, circuits, code, AI/GNNs, networks.
 		\end{tcolorbox}
@@ -1399,56 +1395,8 @@
 \begin{frame}[standout]
 	\Huge \textbf{Thank You!}\\[1em]
 	\large Questions?\\[1em]
-	\normalsize
-	\faEnvelope\ \texttt{[your.email@university.edu]}\\[0.4em]
-	\faGithub\ \texttt{github.com/yourprofile}
+	
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% APPENDIX / CHEAT SHEET
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-
-\begin{frame}{Appendix: Q\&A Cheat Sheet}
-	\textbf{Q: Is GI the same as Graph Automorphism?}\\
-	\textit{A: Related but different. Automorphism is GI with $G=H$ — finding self-symmetries.}
-
-	\vspace{0.4em}
-	\textbf{Q: How is GI used in machine learning?}\\
-	\textit{A: GNNs use WL-style aggregation. Their expressiveness is provably limited by WL.}
-
-	\vspace{0.4em}
-	\textbf{Q: Did Babai win a prize for his result?}\\
-	\textit{A: He won the Knuth Prize (2015) and it is widely regarded as a landmark result.}
-
-	\vspace{0.4em}
-	\textbf{Q: What would happen if GI were shown to be in P?}\\
-	\textit{A: It would be a major breakthrough; many subgraph problems would become faster.}
-
-	\vspace{0.4em}
-	\textbf{Q: Can quantum computers solve GI efficiently?}\\
-	\textit{A: No known quantum algorithm gives a superpolynomial speedup for GI yet.}
-\end{frame}
-
-\begin{frame}{Appendix: Key Notation Reference}
-	\centering
-	\renewcommand{\arraystretch}{1.6}
-	\begin{tabular}{cl}
-		\toprule
-		\textbf{Symbol}     & \textbf{Meaning}                           \\
-		\midrule
-		$G = (V, E)$        & Graph with vertex set $V$, edge set $E$    \\
-		$G \cong H$         & $G$ and $H$ are isomorphic                 \\
-		$f: V_G \to V_H$    & Bijection (the isomorphism mapping)        \\
-		$n$                 & Number of vertices ($|V|$)                 \\
-		$n!$                & Factorial — number of brute-force mappings \\
-		$O(n^k)$            & Polynomial time                            \\
-		$2^{O((\log n)^c)}$ & Quasi-polynomial time (Babai)              \\
-		$\deg(v)$           & Degree of vertex $v$                       \\
-		WL                  & Weisfeiler-Lehman test                     \\
-		CFI                 & Cai-Fürer-Immerman adversarial graphs      \\
-		\bottomrule
-	\end{tabular}
-\end{frame}
 
 \end{document}

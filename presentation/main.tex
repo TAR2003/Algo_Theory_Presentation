@@ -1,167 +1,1462 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  COMPLEXITY OF GRAPH ISOMORPHISM PROBLEM
+%  Beamer Presentation — Metropolis Theme
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[10pt, aspectratio=169]{beamer}
 
-% Theme Choice
-\usetheme{metropolis} 
-\usecolortheme{owl} % Professional dark theme, very eye-soothing
+%% ── Metropolis Theme ────────────────────────────────────────────
+\usetheme[progressbar=frametitle, block=fill, numbering=fraction]{metropolis}
 
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath, amssymb, amsthm}
+%% ── Packages ────────────────────────────────────────────────────
 \usepackage{tikz}
-\usetikzlibrary{graphs, graphs.standard, positioning, shapes.geometric}
+\usetikzlibrary{positioning, arrows.meta,
+                decorations.pathreplacing, shapes.geometric,
+                fit, backgrounds, calc}
 
-% Title Page Info
-\title{The Complexity of Graph Isomorphism}
-\subtitle{A Journey from NP-Intermediate to Quasi-Polynomial Time}
-\author{Your Name}
-\date{\today}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Simple icon replacements (no fontawesome5 needed)
+\newcommand{\faLightbulb}{$\bigstar$}
+\newcommand{\faQuestion}{?}
+\newcommand{\faFlask}{$\triangleright$}
+\newcommand{\faCubes}{$\boxplus$}
+\newcommand{\faStar}{$\bigstar$}
+\newcommand{\faThumbsUp}{(+)}
+\newcommand{\faThumbsDown}{(-)}
+\newcommand{\faCheck}{\checkmark}
+\newcommand{\faArrowRight}{$\Rightarrow$}
+\newcommand{\faAtom}{$\otimes$}
+\newcommand{\faMicrochip}{$\square$}
+\newcommand{\faCode}{\{\}}
+\newcommand{\faNetworkWired}{$\circledast$}
+\newcommand{\faBrain}{$\star$}
+\newcommand{\faEnvelope}{$\boxtimes$}
+\newcommand{\faGithub}{[gh]}
+\newcommand{\faExclamationTriangle}{$\triangle$}
+\newcommand{\faCheckCircle}{$\checkmark$}
+\newcommand{\faTrophy}{$\blacktriangle$}
+
+%% ── Custom Colours ──────────────────────────────────────────────
+\definecolor{mDark}    {HTML}{23373B}
+\definecolor{mAccent}  {HTML}{EB811B}
+\definecolor{mBlue}    {HTML}{23ADEF}
+\definecolor{mGreen}   {HTML}{14B57F}
+\definecolor{mRed}     {HTML}{E74C3C}
+\definecolor{mPurple}  {HTML}{9B59B6}
+\definecolor{mGray}    {HTML}{95A5A6}
+\definecolor{mYellow}  {HTML}{F1C40F}
+\definecolor{bgLight}  {HTML}{F5F5F0}
+
+\setbeamercolor{palette primary}{bg=mDark}
+\setbeamercolor{progress bar}{fg=mAccent, bg=mDark!40}
+\setbeamercolor{alerted text}{fg=mAccent}
+
+%% ── Custom tcolorbox styles ─────────────────────────────────────
+\tcbset{
+  defbox/.style={
+    colback=mBlue!8, colframe=mBlue!70!black,
+    fonttitle=\bfseries, arc=4pt, boxrule=0.8pt,
+  },
+  keybox/.style={
+    colback=mAccent!10, colframe=mAccent,
+    fonttitle=\bfseries, arc=4pt, boxrule=0.8pt,
+  },
+  greenbox/.style={
+    colback=mGreen!10, colframe=mGreen!80!black,
+    fonttitle=\bfseries, arc=4pt, boxrule=0.8pt,
+  },
+  redbox/.style={
+    colback=mRed!10, colframe=mRed,
+    fonttitle=\bfseries, arc=4pt, boxrule=0.8pt,
+  },
+}
+
+%% ── TikZ graph node styles ──────────────────────────────────────
+\tikzset{
+  gnode/.style={circle, draw=#1!80!black, fill=#1!30,
+                minimum size=7mm, thick, font=\small\bfseries},
+  gnodew/.style={gnode=mBlue},
+  gnoder/.style={gnode=mRed},
+  gnodeg/.style={gnode=mGreen},
+  gnodem/.style={gnode=mPurple},
+  gnodey/.style={gnode=mYellow},
+  gedge/.style={thick, draw=mDark!60},
+  gedgeh/.style={very thick, draw=mAccent},
+  arrow/.style={-{Stealth[length=2mm]}, thick, draw=mDark!70},
+}
+
+%% ── Meta-data ───────────────────────────────────────────────────
+\title{\textbf{The Complexity of\\Graph Isomorphism}}
+\subtitle{From Factorial Brute Force to Quasi-Polynomial Breakthrough}
+\author{Presented by: \textit{[Your Name]}}
 \institute{Department of Computer Science}
+\date{\today}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-% 1. Title Slide
+%% ════════════════════════════════════════════════════════════════
+%%  TITLE SLIDE
+%% ════════════════════════════════════════════════════════════════
 \maketitle
 
-% 2. Overview
-\begin{frame}{Roadmap}
-    \tableofcontents
+%% ════════════════════════════════════════════════════════════════
+%%  OUTLINE
+%% ════════════════════════════════════════════════════════════════
+\begin{frame}{Outline}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
 \end{frame}
 
-\section{Introduction: The Visual Puzzle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction — What is Graph Isomorphism?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% 3. What is GI?
-\begin{frame}{What is Graph Isomorphism (GI)?}
-    \begin{itemize}
-        \item \textbf{Core Question:} Are these two graphs structurally identical?
-        \item \textbf{The Catch:} They are drawn differently and labeled differently.
-    \end{itemize}
-    \begin{center}
-        \begin{tikzpicture}[nodes={draw, circle, fill=blue!20}, node distance=1.5cm]
-            % Graph G
-            \node (n1) {1};
-            \node (n2) [right of=n1] {2};
-            \node (n3) [below of=n1] {3};
-            \node (n4) [right of=n3] {4};
-            \draw (n1) -- (n2) -- (n4) -- (n3) -- (n1);
-            
-            \node[draw=none, fill=none] at (3, -0.75) {\huge $\cong$};
-            
-            % Graph H (Drawn as a diamond)
-            \begin{scope}[xshift=5cm]
-                \node (ma) {A};
-                \node (mb) [above right of=ma] {B};
-                \node (mc) [below right of=ma] {C};
-                \node (md) [below right of=mb] {D};
-                \draw (ma) -- (mb) -- (md) -- (mc) -- (ma);
-            \end{scope}
-        \end{tikzpicture}
-    \end{center}
+%% ── Slide: The Opening Hook ─────────────────────────────────────
+\begin{frame}{Are These the \alert{Same} Graph?}
+  \begin{columns}[c]
+    \column{0.45\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1.0]
+      % Graph G — pentagon layout
+      \node[gnodew] (a) at (90:1.5)  {A};
+      \node[gnodew] (b) at (18:1.5)  {B};
+      \node[gnodew] (c) at (306:1.5) {C};
+      \node[gnodew] (d) at (234:1.5) {D};
+      \node[gnodew] (e) at (162:1.5) {E};
+      \draw[gedge] (a)--(b)--(c)--(d)--(e)--(a);
+      \node[below=1.3cm of d, xshift=0.4cm]{\textbf{Graph $G$}};
+    \end{tikzpicture}
+
+    \column{0.1\textwidth}
+    \centering
+    \Large\color{mAccent}\textbf{?}
+
+    \column{0.45\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1.0]
+      % Graph H — irregular layout
+      \node[gnoder] (p) at (0,0)   {1};
+      \node[gnoder] (q) at (2,0.5) {2};
+      \node[gnoder] (r) at (1,1.6) {3};
+      \node[gnoder] (s) at (0.3,2.3){4};
+      \node[gnoder] (t) at (2,2.2) {5};
+      \draw[gedge] (p)--(q)--(t)--(s)--(r)--(p);
+      \node[below=0.2cm of p]{\textbf{Graph $H$}};
+    \end{tikzpicture}
+  \end{columns}
+
+  \vspace{0.6em}
+  \begin{tcolorbox}[keybox, title={\faLightbulb\; Human Intuition Fails Here}]
+    They \emph{look} different — but are they structurally identical?\\
+    This is the \textbf{Graph Isomorphism Problem}.
+  \end{tcolorbox}
 \end{frame}
 
-% 4. Formal Definition
+%% ── Slide: Etymology ────────────────────────────────────────────
+\begin{frame}{The Word \textit{Isomorphism}}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[defbox, title={Etymology}]
+      \begin{itemize}
+        \item \textbf{iso} \hfill (Greek) \textit{equal}
+        \item \textbf{morphe} \hfill (Greek) \textit{shape}
+      \end{itemize}
+      \vspace{0.3em}
+      $\Rightarrow$ \textbf{"Same shape"}
+    \end{tcolorbox}
+
+    \vspace{0.8em}
+    \begin{tcolorbox}[greenbox, title={The Necklace Analogy}]
+      Tangle, stretch, or rearrange a necklace — the \textit{connections} never change.
+      The \textbf{structure} is what matters, not the picture.
+    \end{tcolorbox}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      % Same graph, two layouts
+      \node[gnodew] (a1) at (0,2)   {A};
+      \node[gnodew] (b1) at (1.5,2) {B};
+      \node[gnodew] (c1) at (1.5,0.5){C};
+      \node[gnodew] (d1) at (0,0.5) {D};
+      \draw[gedge] (a1)--(b1)--(c1)--(d1)--(a1);
+      \node at (0.75, -0.3) {Layout 1};
+
+      \node[gnoder] (a2) at (3.5,2.5){A};
+      \node[gnoder] (b2) at (5.2,1.8){B};
+      \node[gnoder] (c2) at (4.8,0.2){C};
+      \node[gnoder] (d2) at (3.2,0.8){D};
+      \draw[gedge] (a2)--(b2)--(c2)--(d2)--(a2);
+      \node at (4.2, -0.3) {Layout 2};
+
+      \draw[arrow, mGreen, bend left=20] (b1) to node[above, font=\tiny]{\textit{same graph!}} (a2);
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: Formal Definition ────────────────────────────────────
 \begin{frame}{Formal Definition}
-    Two graphs $G=(V_G, E_G)$ and $H=(V_H, E_H)$ are isomorphic if there exists a bijection $f: V_G \to V_H$ such that:
-    \[ (u, v) \in E_G \iff (f(u), f(v)) \in E_H \]
-    
-    \vspace{0.5cm}
-    \textbf{The Challenge:}
+  \begin{tcolorbox}[defbox, title={Definition — Graph Isomorphism}]
+    Two graphs $G = (V_G, E_G)$ and $H = (V_H, E_H)$ are \textbf{isomorphic}
+    ($G \cong H$) if there exists a bijection:
+    \[
+      f : V_G \;\longrightarrow\; V_H
+    \]
+    such that for all $u,v \in V_G$:
+    \[
+      (u,v)\in E_G \;\iff\; (f(u),\, f(v))\in E_H
+    \]
+  \end{tcolorbox}
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \textbf{In plain English:}
     \begin{itemize}
-        \item There are $n!$ possible bijections (mappings).
-        \item For $n=100$, $n!$ is larger than the number of atoms in the universe.
+      \item[$\bullet$] If $A$ and $B$ are friends in $G$,\\
+            their twins $f(A)$, $f(B)$ must be friends in $H$.
+      \item[$\bullet$] No friendship is added or removed.
+      \item[$\bullet$] It is a \textit{structure-preserving} renaming.
     \end{itemize}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+      \node[gnodew] (u) at (0,1.2) {$u$};
+      \node[gnodew] (v) at (0,0)   {$v$};
+      \node[gnoder] (fu) at (2.5,1.2) {$f(u)$};
+      \node[gnoder] (fv) at (2.5,0)   {$f(v)$};
+      \draw[gedge, very thick] (u)--(v) node[midway, left, font=\tiny]{edge};
+      \draw[gedge, very thick] (fu)--(fv);
+      \draw[arrow, dashed, mAccent] (u)  to node[above, font=\tiny]{$f$} (fu);
+      \draw[arrow, dashed, mAccent] (v)  to node[below, font=\tiny]{$f$} (fv);
+      \node at (0,   -0.8) {\small Graph $G$};
+      \node at (2.5, -0.8) {\small Graph $H$};
+    \end{tikzpicture}
+  \end{columns}
 \end{frame}
 
-\section{The Complexity Mystery}
+%% ── Slide: Proving the Example ──────────────────────────────────
+\begin{frame}{Revealing the Mapping}
+  \begin{columns}[c]
+    \column{0.38\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \node[gnodew] (a) at (90:1.5)  {A};
+      \node[gnodew] (b) at (18:1.5)  {B};
+      \node[gnodew] (c) at (306:1.5) {C};
+      \node[gnodew] (d) at (234:1.5) {D};
+      \node[gnodew] (e) at (162:1.5) {E};
+      \draw[gedge] (a)--(b)--(c)--(d)--(e)--(a);
+      \node[below=1.3cm of d, xshift=0.5cm]{\small $G$};
+    \end{tikzpicture}
 
-% 5. Complexity Classes
-\begin{frame}{Where does it live?}
-    \begin{itemize}
-        \item \textbf{P:} Polynomial time (Easy).
-        \item \textbf{NP-Complete:} Hard (e.g., SAT, Traveling Salesperson).
-        \item \textbf{GI-Complete:} Its own category!
-    \end{itemize}
-    \pause
-    \begin{block}{The "Limbo" Problem}
-        GI is one of the few problems in \textbf{NP} not known to be in \textbf{P} or \textbf{NP-Complete}. It is often called an \textit{NP-Intermediate} candidate.
-    \end{block}
+    \column{0.22\textwidth}
+    \centering
+    \begin{tabular}{c@{$\;\to\;$}c}
+      \toprule
+      $G$ & $H$ \\
+      \midrule
+      A & 1 \\
+      B & 2 \\
+      C & 5 \\
+      D & 4 \\
+      E & 3 \\
+      \bottomrule
+    \end{tabular}
+
+    \column{0.38\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \node[gnoder] (p) at (0,0)    {1};
+      \node[gnoder] (q) at (2,0.5)  {2};
+      \node[gnoder] (r) at (1,1.6)  {3};
+      \node[gnoder] (s) at (0.3,2.3){4};
+      \node[gnoder] (t) at (2,2.2)  {5};
+      \draw[gedge] (p)--(q)--(t)--(s)--(r)--(p);
+      \node[below=0.18cm of p]{\small $H$};
+    \end{tikzpicture}
+  \end{columns}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[greenbox]
+    \centering
+    $G \cong H$ \textbf{— They are the same graph!} \\
+    The mapping $f$ is the proof.
+  \end{tcolorbox}
 \end{frame}
 
-% 6. Why not NP-Complete?
-\begin{frame}{Why it's likely NOT NP-Complete}
-    \textbf{Schöning's Theorem (1988):}
-    If GI were NP-Complete, then the \textbf{Polynomial Hierarchy (PH)} would collapse to the second level.
-    
-    \vspace{0.5cm}
+%% ── Slide: Why is it a "Problem"? ───────────────────────────────
+\begin{frame}{Why is This a \alert{Problem}?}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \textbf{Brute-Force Approach:}
     \begin{itemize}
-        \item Most researchers believe $PH$ does not collapse.
-        \item Therefore, GI must be "easier" than NP-Complete problems.
+      \item Try \textit{every possible} mapping $f$
+      \item For $n$ nodes: $\;n!\;$ possibilities
     \end{itemize}
+
+    \vspace{0.6em}
+    \begin{tcolorbox}[redbox, title={Scale of $n!$}]
+      \small
+      \begin{tabular}{lr}
+        \toprule
+        Nodes & $n!$ \\
+        \midrule
+        5   & 120 \\
+        10  & 3,628,800 \\
+        20  & $\approx 2.4 \times 10^{18}$ \\
+        100 & $9.33 \times 10^{157}$ \\
+        \bottomrule
+      \end{tabular}
+    \end{tcolorbox}
+
+    \column{0.5\textwidth}
+    \vspace{1em}
+    \begin{tcolorbox}[keybox]
+      \faAtom\; Atoms in the observable universe:\\[0.3em]
+      \centering $\approx 10^{80}$
+    \end{tcolorbox}
+
+    \vspace{0.5em}
+    \begin{tcolorbox}[redbox]
+      $100!\; = 9.33\times 10^{157}$\\[0.2em]
+      \textbf{Vastly exceeds} the number of atoms!
+    \end{tcolorbox}
+
+    \vspace{0.5em}
+    \faArrowRight\; We need a \textbf{clever algorithm}.
+  \end{columns}
 \end{frame}
 
-\section{The 2015 Breakthrough}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Complexity — Where Does GI Live?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% 7. László Babai
-\begin{frame}{The Babai Breakthrough (2015)}
-    \begin{itemize}
-        \item \textbf{Who:} László Babai (University of Chicago).
-        \item \textbf{What:} An algorithm running in \textbf{Quasi-Polynomial Time}.
-    \end{itemize}
-    
-    \[ 2^{O((\log n)^c)} \]
-    
-    \begin{itemize}
-        \item Much faster than exponential $2^n$.
-        \item Just a step away from true Polynomial time $n^k$.
-    \end{itemize}
+%% ── Slide: Complexity Buckets ───────────────────────────────────
+\begin{frame}{The "Map" of Computational Complexity}
+  \centering
+  \begin{tikzpicture}[scale=0.7]
+    \node[draw=mGreen!60!black, fill=mGreen!10, rounded corners=6pt, minimum width=2.5cm, minimum height=1cm] at (-3.5,0.5) {P};
+    \node[draw=mRed!80!black, fill=mRed!10, rounded corners=6pt, minimum width=2.5cm, minimum height=1cm] at (3.5,0.5) {NP};
+    \node[draw=mAccent, fill=mAccent!15, circle, minimum size=8mm] at (0,0.5) {GI};
+    \draw[arrow] (-2.5,0.5) -- (-0.5,0.5);
+    \draw[arrow] (0.5,0.5) -- (2.5,0.5);
+
+    \node[font=\tiny, align=center] at (-3.5,-0.4) {Sorting,\ Shortest Path};
+    \node[font=\tiny, align=center] at (3.5,-0.4) {Sudoku,\ TSP};
+    \node[font=\tiny, align=center] at (0,-0.8) {NP-Intermediate\ "Limbo"};
+  \end{tikzpicture}
 \end{frame}
 
-\section{Solving in Practice: The WL-Test}
+%% ── Slide: Why Not P? ───────────────────────────────────────────
+\begin{frame}{Why is GI \alert{Not Known} to be in P?}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{tcolorbox}[redbox, title={\faQuestion\; Why Not Easy (P)?}]
+      \begin{itemize}
+        \item No polynomial algorithm found that works for \textit{every} graph.
+        \item Highly \textbf{symmetric} graphs defeat most shortcuts.
+        \item After decades of effort — still open!
+      \end{itemize}
+    \end{tcolorbox}
 
-% 8. Color Refinement Animation
-\begin{frame}{The Weisfeiler-Lehman (WL) Test}
-    A "Color Refinement" heuristic used in the real world.
-    
-    \textbf{Step 1: Initialization}
-    \begin{itemize}
-        \item Label every node with its degree (e.g., all nodes with 3 neighbors get color "Blue").
-    \end{itemize}
-    \pause
-    \textbf{Step 2: Refinement (The Animation)}
-    \begin{itemize}
-        \item Each node gets a new color based on the multiset of its neighbors' colors.
-        \item \textit{Iterate} until colors stabilize.
-    \end{itemize}
-\end{frame}
+    \column{0.48\textwidth}
+    \begin{tcolorbox}[greenbox, title={\faQuestion\; Why Not Hard (NP-Complete)?}]
+      \begin{itemize}
+        \item NP-Complete problems have \textit{random} structure.
+        \item GI has rich \textbf{mathematical structure} (Group Theory).
+        \item It's more like a Rubik's Cube than a pile of tangled yarn!
+      \end{itemize}
+    \end{tcolorbox}
+  \end{columns}
 
-% 9. Real World Applications
-\begin{frame}{Real World Applications}
+  \vspace{0.8em}
+  \begin{tcolorbox}[keybox, title={\faCubes\; The Rubik's Cube Analogy}]
     \begin{columns}
-        \column{0.5\textwidth}
-        \textbf{Chemoinformatics}
-        \begin{itemize}
-            \item Comparing molecular structures.
-        \end{itemize}
-        \vspace{0.5cm}
-        \textbf{Circuit Verification}
-        \begin{itemize}
-            \item Matching physical chips to digital designs.
-        \end{itemize}
-        
-        \column{0.5\textwidth}
-        \textbf{Code Fingerprinting}
-        \begin{itemize}
-            \item Detecting software plagiarism.
-        \end{itemize}
+      \column{0.7\textwidth}
+        \textbf{NP-Complete:} Tangled yarn — no structure to exploit.\\[0.3em]
+        \textbf{GI:} A Rubik's Cube — looks messy, but strict mathematical rules allow clever "twists."
+      \column{0.3\textwidth}
+        \centering
+        \tikz{
+          \draw[mAccent, very thick, rounded corners=2pt]
+            (0,0) grid[step=0.4] (1.2, 1.2);
+          \draw[mBlue, very thick, rounded corners=2pt]
+            (0.1,0.1) grid[step=0.4] (0.9, 0.9);
+        }
     \end{columns}
+  \end{tcolorbox}
 \end{frame}
 
-% 10. Conclusion
-\begin{frame}{Summary}
+%% ── Slide: Schöning Evidence ────────────────────────────────────
+\begin{frame}{Evidence: GI Cannot Be NP-Complete}
+  \begin{tcolorbox}[defbox, title={\faFlask\; Schöning's Theorem (1988)}]
+    If \textbf{Graph Isomorphism} were NP-Complete,\\
+    then the \textbf{Polynomial Hierarchy} would \alert{collapse}.
+  \end{tcolorbox}
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \textbf{What is the Polynomial Hierarchy?}
     \begin{itemize}
-        \item GI is a unique "Limbo" problem in Complexity Theory.
-        \item Too much math structure to be NP-Complete; too hard to be (proven) P.
-        \item Babai's result brought us to the doorstep of Polynomial time.
-        \item \textbf{Future:} Will someone finally prove $GI \in P$?
+      \item A tower of complexity levels above P and NP.
+      \item Each level is "strictly harder" than the one below.
+      \item A \textit{collapse} means many "hard" problems\\become "easy" — widely believed to be \textbf{false}.
     \end{itemize}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.7]
+      \foreach \y/\lab in {0/P, 1/NP, 2/$\Sigma_2^P$, 3/$\Sigma_3^P$, 4/\ldots}{
+        \draw[fill=mBlue!\the\numexpr 10+\y*18\relax!white,
+              draw=mBlue!60, rounded corners=3pt]
+          (-1.5+\y*0.15, \y*0.75) rectangle (1.5-\y*0.15, \y*0.75+0.65);
+        \node[font=\small\bfseries] at (0, \y*0.75+0.32) {\lab};
+      }
+      \draw[mRed, very thick, <->, bend right=40]
+        (1.4,0.32) to node[right, font=\tiny, align=left]{collapse\\= disaster} (1.4, 3.3);
+    \end{tikzpicture}
+  \end{columns}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[greenbox]
+    \centering
+    $\Rightarrow$ GI is \textbf{almost certainly not NP-Complete}.\\
+    It lives in the mysterious \textbf{NP-Intermediate} zone.
+  \end{tcolorbox}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Why Computers Struggle — The Matrix Problem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Adjacency Matrix ─────────────────────────────────────
+\begin{frame}{How a Computer "Sees" a Graph}
+  \begin{columns}[c]
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \node[gnodew] (n1) at (0,2)   {1};
+      \node[gnodew] (n2) at (1.6,2) {2};
+      \node[gnodew] (n3) at (1.6,0.5){3};
+      \node[gnodew] (n4) at (0,0.5) {4};
+      \draw[gedge] (n1)--(n2) (n2)--(n3) (n3)--(n4) (n4)--(n1) (n1)--(n3);
+      \node at (0.8,-0.2){\small Graph $G$};
+    \end{tikzpicture}
+
+    \column{0.58\textwidth}
+    \textbf{Adjacency Matrix} of $G$:
+    \[
+      A_G =
+      \begin{pmatrix}
+        0 & \mathbf{1} & \mathbf{1} & \mathbf{1} \\
+        \mathbf{1} & 0 & \mathbf{1} & 0 \\
+        \mathbf{1} & \mathbf{1} & 0 & \mathbf{1} \\
+        \mathbf{1} & 0 & \mathbf{1} & 0
+      \end{pmatrix}
+    \]
+    \begin{itemize}
+      \item Entry $[i,j] = 1$ iff edge $(i,j)$ exists.
+      \item Node \textbf{labels} determine the matrix layout.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: The Labelling Nightmare ──────────────────────────────
+\begin{frame}{The \alert{Labelling} Nightmare}
+  \textbf{Key insight:} The same graph gives \textit{different} matrices for different labellings!
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \centering
+    \textbf{Labelling 1}\\[0.4em]
+    \begin{tikzpicture}[scale=0.85]
+      \node[gnodew] (a) at (0,1.5){1};
+      \node[gnodew] (b) at (1.5,1.5){2};
+      \node[gnodew] (c) at (1.5,0){3};
+      \node[gnodew] (d) at (0,0){4};
+      \draw[gedge](a)--(b)--(c)--(d)--(a);
+    \end{tikzpicture}
+    \[
+      \begin{pmatrix}0&1&0&1\\1&0&1&0\\0&1&0&1\\1&0&1&0\end{pmatrix}
+    \]
+
+    \column{0.48\textwidth}
+    \centering
+    \textbf{Labelling 2 (same graph!)}\\[0.4em]
+    \begin{tikzpicture}[scale=0.85]
+      \node[gnoder] (a) at (0,1.5){3};
+      \node[gnoder] (b) at (1.5,1.5){1};
+      \node[gnoder] (c) at (1.5,0){4};
+      \node[gnoder] (d) at (0,0){2};
+      \draw[gedge](a)--(b)--(c)--(d)--(a);
+    \end{tikzpicture}
+    \[
+      \begin{pmatrix}0&1&1&0\\1&0&0&1\\1&0&0&1\\0&1&1&0\end{pmatrix}
+    \]
+  \end{columns}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[keybox]
+    The computer must find: can we \textbf{permute rows \& columns} of $A_G$ to get $A_H$?\\
+    For $n$ nodes $\Rightarrow$ $n!$ row/column permutations to check.
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: Factorial Explosion (animated) ───────────────────────
+\begin{frame}{The Factorial \alert{Explosion}}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.82\textwidth, height=5cm,
+      xlabel={Number of nodes $n$},
+      ylabel={$\log_{10}(\text{steps})$},
+      xmin=1, xmax=22,
+      ymin=0, ymax=22,
+      xtick={2,5,10,15,20},
+      ytick={0,5,10,15,20},
+      grid=both, grid style={dotted, mGray!40},
+      legend pos=north west,
+      legend style={font=\small},
+      tick label style={font=\small},
+    ]
+      % n! (factorial)
+      \addplot[mRed, very thick, domain=1:20, samples=20]
+        {ln(factorial(x))/ln(10)};
+      \addlegendentry{$n!$ (Brute Force)}
+
+      % n^3 (polynomial)
+      \addplot[mGreen, very thick, domain=1:20, samples=60]
+        {3*log10(x)};
+      \addlegendentry{$n^3$ (Polynomial)}
+
+      % quasi-poly: 2^(log n)^2
+      \addplot[mBlue, thick, dashed, domain=2:20, samples=60]
+        {(log10(x))^2 * log10(2) * 10};  % illustrative scaling
+      \addlegendentry{$2^{(\log n)^c}$ (Babai)}
+
+      % label atoms
+      \draw[mAccent, dashed, thick] (axis cs:1,80/5) -- (axis cs:22,80/5)
+        node[right, font=\tiny, mAccent]{atoms $\approx10^{80}$};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{0.2em}
+  {\small \textit{For $n=100$: brute force needs $\sim10^{157}$ steps — utterly infeasible.}}
+\end{frame}
+
+%% ── Slide: Regular Graphs — "No Corners" ───────────────────────
+\begin{frame}{The "No Corners" Problem — Regular Graphs}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[defbox, title={Regular Graph}]
+      Every node has the \textbf{same degree} (same number of neighbours).
+    \end{tcolorbox}
+    \vspace{0.5em}
+    \begin{itemize}
+      \item In a jigsaw puzzle $\Rightarrow$ look for \textit{corner pieces}.
+      \item In GI with regular graphs $\Rightarrow$ \textbf{all nodes look identical}.
+      \item No unique starting point!
+      \item The computer gets completely \alert{lost}.
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      % 3-regular graph (K4)
+      \node[gnodew] (a) at (0,1.5)  {A};
+      \node[gnodew] (b) at (1.5,1.5){B};
+      \node[gnodew] (c) at (1.5,0)  {C};
+      \node[gnodew] (d) at (0,0)    {D};
+      \draw[gedge](a)--(b)(b)--(c)(c)--(d)(d)--(a)(a)--(c)(b)--(d);
+      \node[below=0.15cm of d]{\small $K_4$: every node has degree 3};
+
+      % degree labels
+      \foreach \n in {a,b,c,d}{
+        \node[font=\tiny, mGreen!70!black, right=1pt] at (\n.east) {deg=3};
+      }
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Babai's Breakthrough — 2015}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: The Announcement ─────────────────────────────────────
+\begin{frame}{November 2015 — A \alert{Bombshell}}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[keybox, title={\faStar\; The Announcement}]
+      \textbf{László Babai} (University of Chicago) announced a\\[0.3em]
+      \Huge\centering\textbf{Quasi-Polynomial}\\[0.3em]
+      \normalsize time algorithm for Graph Isomorphism.
+    \end{tcolorbox}
+
+    \vspace{0.5em}
+    \begin{itemize}
+      \item Previous best: Luks (1983) — sub-exponential.
+      \item Babai improved it by an \textit{exponential factor}.
+      \item Considered one of the greatest TCS results of the 21st century.
+    \end{itemize}
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \node[draw=mAccent, very thick, rounded corners=8pt,
+            fill=mAccent!10, minimum width=3.8cm, minimum height=4.5cm,
+            align=center, font=\small] (card) {
+        
+      };
+      \node[align=center, font=\Large\bfseries, text=mDark] at (card.center)
+        {László\\Babai\\[0.5em]\normalsize\textcolor{mGray}{Univ. of Chicago}};
+      \draw[mAccent, very thick] (card.north west) rectangle (card.south east);
+      \node[below=0.1cm of card, font=\small\itshape]{Graph Isomorphism Expert};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: What is Quasi-Polynomial? ────────────────────────────
+\begin{frame}{What is \alert{Quasi-Polynomial} Time?}
+  \begin{tcolorbox}[defbox, title={Babai's Algorithm Runs in Time:}]
+    \[
+      2^{\,O\!\left((\log n)^c\right)}
+      \quad \text{for some constant } c
+    \]
+  \end{tcolorbox}
+
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{tcolorbox}[redbox, title={Exponential (Old)}]
+      \centering $2^n$\\[0.3em]
+      \small For $n=100$:\\$\approx 10^{30}$ steps
+    \end{tcolorbox}
+
+    \column{0.33\textwidth}
+    \begin{tcolorbox}[defbox, title={Quasi-Poly (Babai)}]
+      \centering $2^{(\log n)^c}$\\[0.3em]
+      \small For $n=100$:\\$\approx 10^{7}$ steps
+    \end{tcolorbox}
+
+    \column{0.33\textwidth}
+    \begin{tcolorbox}[greenbox, title={Polynomial (Goal)}]
+      \centering $n^k$\\[0.3em]
+      \small For $n=100$:\\$\approx 10^{6}$ steps
+    \end{tcolorbox}
+  \end{columns}
+
+  \vspace{0.5em}
+  \begin{tcolorbox}[keybox]
+    \centering
+    \textbf{Exponential} $\;\gg\;$ \textbf{Quasi-Polynomial} $\;\gg\;$ \textbf{Polynomial}\\[0.2em]
+    Babai's result is the \textit{closest} GI has ever been to the "Easy" bucket.
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: How Babai Did It ─────────────────────────────────────
+\begin{frame}{Babai's Strategy: \textit{Divide and Conquer}}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \textbf{Three Key Ideas:}
+
+    \begin{enumerate}
+      \item \textbf{Symmetry Breaking}\\
+            Hard graphs are too symmetrical.\\
+            Find "weak" spots to break symmetry.
+
+      \vspace{0.5em}
+      \item \textbf{Local Landmarks (Splitter)}\\
+            Identify unique sub-structures within the graph.
+
+      \vspace{0.5em}
+      \item \textbf{Divide \& Conquer}\\
+            Split graph into smaller pieces at landmarks.\\
+            If all pieces match $\Rightarrow$ whole graphs match.
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      % Big graph
+      \node[draw=mBlue, fill=mBlue!10, rounded corners,
+            minimum width=3.2cm, minimum height=1.5cm] (big) at (0,2.5)
+            {\small Big Graph};
+      % Subgraphs
+      \node[draw=mGreen, fill=mGreen!10, rounded corners,
+            minimum width=1.2cm, minimum height=0.8cm] (s1) at (-1.2,1)
+            {\tiny Piece 1};
+      \node[draw=mGreen, fill=mGreen!10, rounded corners,
+            minimum width=1.2cm, minimum height=0.8cm] (s2) at (0.3,1)
+            {\tiny Piece 2};
+      \node[draw=mGreen, fill=mGreen!10, rounded corners,
+            minimum width=1.2cm, minimum height=0.8cm] (s3) at (1.8,1)
+            {\tiny Piece 3};
+      \draw[arrow] (big.south west) -- (s1.north);
+      \draw[arrow] (big.south)      -- (s2.north);
+      \draw[arrow] (big.south east) -- (s3.north);
+
+      % Match
+      \node[draw=mAccent, fill=mAccent!10, rounded corners,
+            minimum width=3.2cm, minimum height=0.8cm] (match) at (0,-0.2)
+            {\small All pieces match?};
+      \draw[arrow] (s1.south) -- (match.north west);
+      \draw[arrow] (s2.south) -- (match.north);
+      \draw[arrow] (s3.south) -- (match.north east);
+
+      \node[mGreen!70!black, font=\bfseries] at (0,-0.9){$\Rightarrow$ Isomorphic!};
+    \end{tikzpicture}
+
+    \vspace{0.3em}
+    \small Uses deep results from \textbf{Group Theory}.
+  \end{columns}
+\end{frame}
+
+%% ── Slide: The Drama ────────────────────────────────────────────
+\begin{frame}{The \alert{Drama} Behind the Proof}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[keybox, title={\faExclamationTriangle\; The Gap (Jan 2017)}]
+      Harald Helfgott found a \textit{gap} (error) in one of Babai's key lemmas.\\[0.3em]
+      The community held its breath\ldots
+    \end{tcolorbox}
+
+    \vspace{0.5em}
+    \begin{tcolorbox}[greenbox, title={\faCheckCircle\; The Fix (Feb 2017)}]
+      Babai returned to his office, worked for weeks, and \textbf{fixed the proof}.\\[0.3em]
+      By early 2017: community consensus — \textit{the proof is correct}.
+    \end{tcolorbox}
+
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      \foreach \y/\col/\lab in {
+        0/mGreen/{2017: Proof Validated},
+        1/mAccent/{Jan 2017: Fix Submitted},
+        2/mRed/{Jan 2017: Gap Found},
+        3/mBlue/{Nov 2015: Paper Announced}
+      }{
+        \filldraw[\col] (-0.08, \y*1.0) rectangle (0.08, \y*1.0+0.06);
+        \fill[\col] (0, \y*1.0+0.03) circle (4pt);
+        \node[right=0.3cm, font=\small, align=left] at (0.1, \y*1.0+0.03) {\lab};
+        \draw[\col!40, thick] (0, \y*1.0+0.03) -- (0.1, \y*1.0+0.03);
+      }
+      \draw[mGray, thick] (0,-0.1) -- (0, 3.1);
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: What it means ────────────────────────────────────────
+\begin{frame}{What Babai's Result \alert{Means}}
+  \begin{tcolorbox}[keybox, title={\faTrophy\; Impact}]
+    \begin{itemize}
+      \item \textbf{Algorithmically:} Vastly faster for large graphs.
+      \item \textbf{Theoretically:} GI is "almost" polynomial — the closest it has ever been to P.
+      \item \textbf{Structurally:} Confirms GI has deep mathematical structure exploitable by algorithms.
+    \end{itemize}
+  \end{tcolorbox}
+
+  \vspace{0.5em}
+  \begin{tcolorbox}[greenbox]
+    \centering
+    \textit{"Babai's result didn't just give us a faster tool; it proved that\\
+     Graph Isomorphism is fundamentally \textbf{not that hard}."}
+  \end{tcolorbox}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[defbox, title={Open Question (Still!)}]
+    Is GI in \textbf{P}? \\
+    No one knows. It remains one of the great open problems in TCS.
+  \end{tcolorbox}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Weisfeiler-Lehman Test — Solving GI in Practice}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Intro to WL Test ─────────────────────────────────────
+\begin{frame}{Real-World Solution: The \alert{Colour Refinement} Trick}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[defbox, title={Weisfeiler-Lehman (WL) Test}]
+      Instead of checking structure directly,\\
+      we \textbf{colour} nodes based on their neighbourhood.\\[0.3em]
+      If two graphs produce different colour palettes $\Rightarrow$ \textbf{not isomorphic}.
+    \end{tcolorbox}
+    \vspace{0.5em}
+    \textbf{Two Phases:}
+    \begin{enumerate}
+      \item \textbf{Initial Colouring} — by node degree.
+      \item \textbf{Refinement} — update colour based on neighbours' colours.
+    \end{enumerate}
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+      \node[gnodew] (a) at (0,2)   {};
+      \node[gnodew] (b) at (1.5,2) {};
+      \node[gnodew] (c) at (2.2,0.8){};
+      \node[gnodew] (d) at (1.5,-0.3){};
+      \node[gnodew] (e) at (0,-0.3){};
+      \node[gnodew] (f) at (-0.7,0.8){};
+      \draw[gedge](a)--(b)(b)--(c)(c)--(d)(d)--(e)(e)--(f)(f)--(a);
+      \draw[gedge](a)--(d)(b)--(e)(c)--(f);
+      \node[below=0.3cm of d]{\small Petersen graph};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: Step 1 — Initial Colouring ──────────────────────────
+\begin{frame}{WL Step 1: \alert{Initial Colouring} by Degree}
+  \centering
+  \begin{tikzpicture}[scale=1.1]
+    % Graph G
+    \node[font=\bfseries] at (-0.3, 3.2) {Graph $G$};
+    \node[gnodew] (g1) at (0,2.5)  {};  % degree 2 -> blue
+    \node[gnodeg] (g2) at (1.5,2.5){};  % degree 3 -> green
+    \node[gnodew] (g3) at (1.5,1.0){};
+    \node[gnodeg] (g4) at (0,1.0)  {};
+    \draw[gedge](g1)--(g2)(g2)--(g3)(g3)--(g4)(g4)--(g1)(g2)--(g4);
+    \node[font=\tiny, below=1pt] at (g1.south) {deg=2};
+    \node[font=\tiny, below=1pt] at (g3.south) {deg=2};
+    \node[font=\tiny, right=1pt] at (g2.east)  {deg=3};
+    \node[font=\tiny, left=1pt]  at (g4.west)  {deg=3};
+
+    % Graph H
+    \node[font=\bfseries] at (4.2, 3.2) {Graph $H$};
+    \node[gnodew] (h1) at (3.5,2.5){};
+    \node[gnodeg] (h2) at (5.2,2.5){};
+    \node[gnodew] (h3) at (5.8,1.0){};
+    \node[gnodeg] (h4) at (3.8,1.0){};
+    \draw[gedge](h1)--(h2)(h2)--(h3)(h3)--(h4)(h4)--(h1)(h1)--(h3);
+    \node[font=\tiny, below=1pt] at (h1.south) {deg=2};
+    \node[font=\tiny, below=1pt] at (h3.south) {deg=2};
+    \node[font=\tiny, right=1pt] at (h2.east)  {deg=3};
+    \node[font=\tiny, left=1pt]  at (h4.west)  {deg=3};
+
+    % Legend
+    \node[gnodew, minimum size=5mm] at (1.5, -0.2){};
+    \node[right=0.2cm, font=\small] at (1.7, -0.2){Degree 2 (Blue)};
+    \node[gnodeg, minimum size=5mm] at (4.0, -0.2){};
+    \node[right=0.2cm, font=\small] at (4.2, -0.2){Degree 3 (Green)};
+  \end{tikzpicture}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[greenbox]
+    Both graphs have \textbf{2 blue} (degree-2) and \textbf{2 green} (degree-3) nodes.\\
+    $\Rightarrow$ Initial colouring does \textit{not} distinguish them. \textbf{Refine further!}
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: Step 2 — Refinement ──────────────────────────────────
+\begin{frame}{WL Step 2: \alert{Refinement} by Neighbourhood Colours}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \textbf{Rule:} Update each node's colour based on \textit{its own colour + sorted colours of neighbours}.
+
+    \vspace{0.5em}
+    \begin{tcolorbox}[defbox, title={Example Update}]
+      A \textcolor{mBlue}{\textbf{Blue}} node with neighbours\\
+      \textcolor{mRed}{\textbf{Red}}, \textcolor{mRed}{\textbf{Red}}\\[0.2em]
+      $\Rightarrow$ gets new colour \textcolor{mPurple}{\textbf{Purple}}
+
+      \vspace{0.3em}
+      A \textcolor{mBlue}{\textbf{Blue}} node with neighbours\\
+      \textcolor{mRed}{\textbf{Red}}, \textcolor{mBlue}{\textbf{Blue}}\\[0.2em]
+      $\Rightarrow$ gets new colour \textcolor{mGreen}{\textbf{Green}}
+    \end{tcolorbox}
+
+    \vspace{0.3em}
+    Repeat until colours \textbf{stabilise}.
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      % Round 0
+      \node[font=\small\bfseries] at (0, 3.5) {Round 0};
+      \node[gnodew, minimum size=6mm] (r0a) at (-0.8, 2.8) {};
+      \node[gnodeg, minimum size=6mm] (r0b) at (0.8, 2.8)  {};
+      \node[gnodew, minimum size=6mm] (r0c) at (-0.8, 1.8) {};
+      \node[gnodeg, minimum size=6mm] (r0d) at (0.8, 1.8)  {};
+      \draw[gedge](r0a)--(r0b)(r0b)--(r0d)(r0d)--(r0c)(r0c)--(r0a)(r0b)--(r0c);
+
+      \draw[arrow, mAccent] (1.3, 2.3) -- (1.9, 2.3)
+        node[right, font=\small]{refine};
+
+      % Round 1
+      \node[font=\small\bfseries] at (3.4, 3.5) {Round 1};
+      \node[gnodem, minimum size=6mm] (r1a) at (2.6, 2.8) {};
+      \node[gnodey, minimum size=6mm] (r1b) at (4.2, 2.8) {};
+      \node[gnodem, minimum size=6mm] (r1c) at (2.6, 1.8) {};
+      \node[gnodey, minimum size=6mm] (r1d) at (4.2, 1.8) {};
+      \draw[gedge](r1a)--(r1b)(r1b)--(r1d)(r1d)--(r1c)(r1c)--(r1a)(r1b)--(r1c);
+    \end{tikzpicture}
+    \vspace{0.3em}
+    \small Colours changed: refinement continues.
+  \end{columns}
+\end{frame}
+
+%% ── Slide: WL Algorithm Full Flow ───────────────────────────────
+\begin{frame}{WL Algorithm — Full Flow}
+  \centering
+  \begin{tikzpicture}[scale=0.85, node distance=0.7cm]
+    \node[draw=mBlue, fill=mBlue!10, rounded corners, minimum width=3.5cm,
+          minimum height=0.7cm, font=\small\bfseries] (init)
+      {1. Colour by degree};
+
+    \node[draw=mGreen, fill=mGreen!10, rounded corners, minimum width=3.5cm,
+          minimum height=0.7cm, font=\small\bfseries, below=0.6cm of init] (refine)
+      {2. Refine: update by neighbours};
+
+    \node[draw=mPurple, fill=mPurple!10, rounded corners, minimum width=3.5cm,
+          minimum height=0.7cm, font=\small\bfseries, below=0.6cm of refine] (check)
+      {3. Palettes match?};
+
+    \node[draw=mRed, fill=mRed!10, rounded corners, minimum width=2.5cm,
+          minimum height=0.7cm, font=\small\bfseries, below left=0.6cm and 0.3cm of check] (no)
+      {NOT isomorphic};
+
+    \node[draw=mGreen, fill=mGreen!10, rounded corners, minimum width=2.5cm,
+          minimum height=0.7cm, font=\small\bfseries, below right=0.6cm and 0.3cm of check] (maybe)
+      {Likely isomorphic};
+
+    \node[draw=mAccent, fill=mAccent!10, rounded corners, minimum width=2.5cm,
+          minimum height=0.7cm, font=\small\bfseries, below=0.6cm of refine, xshift=5.5cm] (stable)
+      {Stable?};
+
+    \draw[arrow] (init) -- (refine);
+    \draw[arrow] (refine) -- (check);
+    \draw[arrow] (check.south west) -- (no.north)
+      node[midway, left, font=\tiny]{No};
+    \draw[arrow] (check.south east) -- (maybe.north)
+      node[midway, right, font=\tiny]{Yes};
+    \draw[arrow] (refine.east) -- ++(0.5,0) |- (stable.west);
+    \draw[arrow] (stable.south) |- node[right, font=\tiny, pos=0.75]{Not yet} (refine.east);
+  \end{tikzpicture}
+\end{frame}
+
+%% ── Slide: Power and Weakness of WL ─────────────────────────────
+\begin{frame}{WL Test: Power and \alert{Weakness}}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{tcolorbox}[greenbox, title={\faThumbsUp\; Strengths}]
+      \begin{itemize}
+        \item Runs in \textbf{polynomial time} $O(n \log n)$.
+        \item Works for almost all graphs encountered in practice.
+        \item Used in \textbf{Graph Neural Networks} (GNNs) in AI!
+      \end{itemize}
+    \end{tcolorbox}
+
+    \column{0.48\textwidth}
+    \begin{tcolorbox}[redbox, title={\faThumbsDown\; Weakness}]
+      \begin{itemize}
+        \item Fails on \textbf{Cai-Fürer-Immerman (CFI) graphs}.
+        \item Highly regular graphs with no distinguishing local structure.
+        \item WL says "same" but they are \textit{different}!
+      \end{itemize}
+    \end{tcolorbox}
+  \end{columns}
+
+  \vspace{0.6em}
+  \begin{tcolorbox}[keybox, title={CFI Graph — The WL Adversary}]
+    \centering
+    \begin{tikzpicture}[scale=0.7]
+      % Two "identical looking" regular gadgets
+      \foreach \x/\col in {0/mBlue, 4/mRed}{
+        \node[gnode=\col, minimum size=5mm] (n\x a) at (\x+0, 0.8)   {};
+        \node[gnode=\col, minimum size=5mm] (n\x b) at (\x+1, 0.8)   {};
+        \node[gnode=\col, minimum size=5mm] (n\x c) at (\x+0.5, 0)   {};
+        \draw[gedge] (n\x a)--(n\x b)(n\x b)--(n\x c)(n\x c)--(n\x a);
+      }
+      \draw[gedge] (n0b)--(n4a);
+      \node[font=\small] at (1.5, -0.6) {WL cannot tell these apart!};
+    \end{tikzpicture}
+  \end{tcolorbox}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithms — A Progression}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Algorithm History Table ─────────────────────────────
+\begin{frame}{Evolution of GI Algorithms}
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{lllp{4.5cm}}
+    \toprule
+    \textbf{Year} & \textbf{Author} & \textbf{Complexity} & \textbf{Key Idea} \\
+    \midrule
+    1970s & Various & $O(n!)$ & Brute force / backtracking \\
+    1980 & Luks & $2^{O(\sqrt{n \log n})}$ & Group theory, bounded degree \\
+    1983 & Luks & Sub-exponential & Divide \& conquer on groups \\
+    1992 & Babai, Luks & $e^{O(\sqrt{n \log n})}$ & Canonical form \\
+    \textbf{2015} & \textbf{Babai} & $\mathbf{2^{O((\log n)^c)}}$ & \textbf{Group theory + local cert.} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \begin{tcolorbox}[keybox]
+    Each step is a \textit{massive} improvement. The 2015 jump was the most dramatic in 30 years.
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: Complexity Growth Comparison ─────────────────────────
+\begin{frame}{Growth Rate Comparison}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.82\textwidth, height=5.5cm,
+      xlabel={$n$ (graph size)},
+      ylabel={Steps (log scale)},
+      ymode=log,
+      xmin=2, xmax=50,
+      ymin=1, ymax=1e20,
+      xtick={5,10,20,30,50},
+      grid=both, grid style={dotted, mGray!30},
+      legend pos=north west,
+      legend style={font=\footnotesize, fill=white},
+      tick label style={font=\footnotesize},
+    ]
+      \addplot[mRed, very thick, domain=2:20, samples=19]
+        {factorial(x)};
+      \addlegendentry{$n!$ (Brute Force)}
+
+      \addplot[mPurple, thick, domain=2:50, samples=49]
+        {2^(sqrt(x*ln(x)/ln(2)))};
+      \addlegendentry{$2^{\sqrt{n\log n}}$ (Luks 1983)}
+
+      \addplot[mBlue, thick, dashed, domain=2:50, samples=49]
+        {2^((ln(x)/ln(2))^2)};
+      \addlegendentry{$2^{(\log n)^2}$ (Babai 2015, approx.)}
+
+      \addplot[mGreen, very thick, domain=2:50, samples=49]
+        {x^3};
+      \addlegendentry{$n^3$ (Polynomial Goal)}
+    \end{axis}
+  \end{tikzpicture}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Special Cases — When GI Is Easy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Tractable Cases ──────────────────────────────────────
+\begin{frame}{When is GI \alert{Provably Easy}?}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{tcolorbox}[greenbox, title={\faCheck\; Polynomial Cases}]
+      \begin{itemize}
+        \item \textbf{Trees} — $O(n \log n)$
+        \item \textbf{Planar graphs} — $O(n)$ (Hopcroft \& Wong 1974)
+        \item \textbf{Bounded degree} — polynomial (Luks 1980)
+        \item \textbf{Interval graphs}
+        \item \textbf{Bounded genus graphs}
+      \end{itemize}
+    \end{tcolorbox}
+
+    \column{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+      % A tree
+      \node[font=\small\bfseries] at (0, 3.2) {Tree (Easy!)};
+      \node[gnodew, minimum size=6mm] (r) at (0,2.6){};
+      \node[gnodew, minimum size=5mm] (l1) at (-1,1.6){};
+      \node[gnodew, minimum size=5mm] (l2) at (1,1.6){};
+      \node[gnodew, minimum size=5mm] (l3) at (-1.5,0.6){};
+      \node[gnodew, minimum size=5mm] (l4) at (-0.5,0.6){};
+      \draw[gedge](r)--(l1)(r)--(l2)(l1)--(l3)(l1)--(l4);
+      \node[gnodew, minimum size=5mm] (l5) at (0.5,0.6){};
+      \draw[gedge](l2)--(l5);
+    \end{tikzpicture}
+  \end{columns}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[keybox]
+    The more \textbf{structure} a graph family has, the easier GI becomes.\\
+    Random, highly-connected graphs are the hardest cases.
+  \end{tcolorbox}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Real-World Applications}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Applications overview ────────────────────────────────
+\begin{frame}{Why Does This \alert{Matter}?}
+  \centering
+  \begin{tikzpicture}[scale=0.85, node distance=0.5cm]
+    % Central node
+    \node[draw=mAccent, fill=mAccent!15, very thick, rounded corners=6pt,
+          minimum width=2.5cm, minimum height=1.0cm, font=\bfseries\small,
+          align=center] (gi) at (0,0) {Graph\\Isomorphism};
+
+    % Applications
+    \node[draw=mBlue, fill=mBlue!10, rounded corners=4pt,
+          minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries,
+          align=center] (chem) at (-4.5, 1.5) {\faFlask\; Chemoinformatics};
+
+    \node[draw=mGreen, fill=mGreen!10, rounded corners=4pt,
+          minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries,
+          align=center] (circuit) at (-4.5, -1.5) {\faMicrochip\; Circuit Design};
+
+    \node[draw=mPurple, fill=mPurple!10, rounded corners=4pt,
+          minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries,
+          align=center] (piracy) at (4.5, 1.5) {\faCode\; Software Piracy};
+
+    \node[draw=mRed, fill=mRed!10, rounded corners=4pt,
+          minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries,
+          align=center] (network) at (4.5, -1.5) {\faNetworkWired\; Network Analysis};
+
+    \node[draw=mYellow!80!black, fill=mYellow!15, rounded corners=4pt,
+          minimum width=2.8cm, minimum height=0.8cm, font=\small\bfseries,
+          align=center] (ai) at (0, 2.8) {\faBrain\; Graph Neural Networks};
+
+    \draw[arrow, mBlue]   (gi) -- (chem);
+    \draw[arrow, mGreen]  (gi) -- (circuit);
+    \draw[arrow, mPurple] (gi) -- (piracy);
+    \draw[arrow, mRed]    (gi) -- (network);
+    \draw[arrow, mYellow!80!black] (gi) -- (ai);
+  \end{tikzpicture}
+\end{frame}
+
+%% ── Slide: Chemoinformatics ─────────────────────────────────────
+\begin{frame}{Application 1: \alert{Chemoinformatics}}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[defbox, title={\faFlask\; The Problem}]
+      Are two molecular structures the same compound?\\[0.3em]
+      Atoms $=$ nodes. Chemical bonds $=$ edges.
+    \end{tcolorbox}
+    \vspace{0.5em}
+    \textbf{Why it matters:}
+    \begin{itemize}
+      \item Drug discovery: is a new compound the same as a known drug?
+      \item Toxicology: detecting toxic isomers.
+      \item Patent checking for novel compounds.
+    \end{itemize}
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      % Simple benzene-like ring
+      \foreach \i in {0,...,5}{
+        \node[draw=mDark, fill=mGreen!40, circle, minimum size=7mm,
+              font=\tiny\bfseries] (c\i) at ({60*\i}:1.2) {C};
+      }
+      \foreach \i/\j in {0/1,1/2,2/3,3/4,4/5,5/0}{
+        \draw[gedge, very thick] (c\i)--(c\j);
+      }
+      % Double bonds alternating
+      \foreach \i/\j in {0/1,2/3,4/5}{
+        \draw[gedge, very thick, mAccent, transform canvas={yshift=2pt}]
+          (c\i)--(c\j);
+      }
+      \node[below=1.2cm] at (0,0) {\small Benzene ring as a graph};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: Circuit Design ───────────────────────────────────────
+\begin{frame}{Application 2: \alert{Circuit Design Verification}}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[defbox, title={\faMicrochip\; The Problem}]
+      Does the physical chip layout match the digital blueprint?\\[0.3em]
+      Logic gates $=$ nodes. Wires $=$ edges.
+    \end{tcolorbox}
+    \vspace{0.5em}
+    \textbf{Why it matters:}
+    \begin{itemize}
+      \item Modern chips have \textit{billions} of transistors.
+      \item Even one wrong connection $\Rightarrow$ chip failure.
+      \item GI algorithms enable automated verification.
+    \end{itemize}
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+      \node[draw=mDark, fill=mBlue!20, rounded corners=2pt,
+            minimum width=1cm, minimum height=0.6cm, font=\tiny\bfseries] (and1)
+            at (0, 1.5) {AND};
+      \node[draw=mDark, fill=mBlue!20, rounded corners=2pt,
+            minimum width=1cm, minimum height=0.6cm, font=\tiny\bfseries] (or1)
+            at (0, 0) {OR};
+      \node[draw=mDark, fill=mRed!20, rounded corners=2pt,
+            minimum width=1cm, minimum height=0.6cm, font=\tiny\bfseries] (not1)
+            at (2.2, 0.75) {NOT};
+      \node[draw=mDark, fill=mGreen!20, rounded corners=2pt,
+            minimum width=1cm, minimum height=0.6cm, font=\tiny\bfseries] (out)
+            at (4, 0.75) {OUT};
+
+      \draw[arrow] (and1.east) -- ++(0.5,0) |- (not1.west);
+      \draw[arrow] (or1.east)  -- ++(0.5,0) |- (not1.west);
+      \draw[arrow] (not1.east) -- (out.west);
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: Software Piracy ──────────────────────────────────────
+\begin{frame}{Application 3: \alert{Software Piracy Detection}}
+  \begin{tcolorbox}[defbox, title={\faCode\; The Problem}]
+    Is this code a stolen copy, even if variable names were changed?\\[0.3em]
+    Functions $=$ nodes.\; Call relationships $=$ edges.
+  \end{tcolorbox}
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \textbf{Original Code (Call Graph):}
+    \begin{tikzpicture}[scale=0.8]
+      \node[gnodew, font=\tiny] (main)   at (0,1.5)  {main};
+      \node[gnodew, font=\tiny] (sort)   at (-1,0.3) {sort};
+      \node[gnodew, font=\tiny] (print)  at (1, 0.3) {print};
+      \node[gnodew, font=\tiny] (helper) at (0,-0.8) {helper};
+      \draw[arrow](main)--(sort)(main)--(print)(sort)--(helper);
+    \end{tikzpicture}
+
+    \column{0.48\textwidth}
+    \textbf{Stolen Code (Renamed):}
+    \begin{tikzpicture}[scale=0.8]
+      \node[gnoder, font=\tiny] (start) at (0,1.5)  {start};
+      \node[gnoder, font=\tiny] (proc1) at (-1,0.3) {proc1};
+      \node[gnoder, font=\tiny] (proc2) at (1, 0.3) {proc2};
+      \node[gnoder, font=\tiny] (util)  at (0,-0.8) {util};
+      \draw[arrow](start)--(proc1)(start)--(proc2)(proc1)--(util);
+    \end{tikzpicture}
+  \end{columns}
+
+  \vspace{0.3em}
+  \begin{tcolorbox}[greenbox]
+    \centering
+    GI detects: same call structure $\Rightarrow$ likely \textbf{copied code}!
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: GNNs ─────────────────────────────────────────────────
+\begin{frame}{Application 4: \alert{Graph Neural Networks} (AI)}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{tcolorbox}[defbox, title={\faBrain\; GNNs and WL}]
+      Modern AI uses graphs to represent:\\
+      molecules, social networks, knowledge bases.
+    \end{tcolorbox}
+    \vspace{0.5em}
+    \begin{itemize}
+      \item GNNs work by \textit{aggregating} node features from neighbours.
+      \item This is \textbf{exactly} the WL colour refinement algorithm!
+      \item The \textbf{expressiveness} of a GNN is bounded by the WL test.
+      \item Key result: standard GNNs cannot distinguish non-isomorphic graphs that fool WL.
+    \end{itemize}
+
+    \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      \node[gnodew, font=\tiny] (a) at (0,2)   {x$_1$};
+      \node[gnodew, font=\tiny] (b) at (1.5,2) {x$_2$};
+      \node[gnodew, font=\tiny] (c) at (1.5,0.7){x$_3$};
+      \node[gnodew, font=\tiny] (d) at (0,0.7) {x$_4$};
+      \draw[gedge](a)--(b)(b)--(c)(c)--(d)(d)--(a)(a)--(c);
+
+      \draw[arrow, mAccent] (2.0, 1.35) -- (2.8, 1.35)
+        node[right, font=\tiny, align=left]{Aggregate\\+ Update};
+
+      \node[draw=mAccent, fill=mAccent!10, rounded corners,
+            minimum width=1.2cm, minimum height=1.2cm,
+            font=\tiny\bfseries, align=center] at (3.8, 1.35){Graph\\Embedding};
+    \end{tikzpicture}
+    \vspace{0.3em}
+    \small WL power $=$ GNN power.
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Open Problems and Summary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ── Slide: Open Problems ────────────────────────────────────────
+\begin{frame}{What Remains \alert{Unknown}?}
+  \begin{enumerate}
+    \item \textbf{Is GI in P?}\\
+          The million-dollar question. We have quasi-polynomial; polynomial is still open.
+
+    \vspace{0.4em}
+    \item \textbf{Can Babai's algorithm be improved to polynomial?}\\
+          Would require fundamentally new group-theoretic machinery.
+
+    \vspace{0.4em}
+    \item \textbf{Does $P \neq NP$?}\\
+          If $P = NP$, then GI $\in$ P trivially.
+
+    \vspace{0.4em}
+    \item \textbf{Is there a graph canonical form computable in polynomial time?}\\
+          A canonical form would solve GI; its complexity remains open.
+  \end{enumerate}
+
+  \vspace{0.4em}
+  \begin{tcolorbox}[keybox]
+    Graph Isomorphism sits at the \textbf{frontier} of complexity theory.\\
+    It has driven some of the deepest results in algorithms and group theory.
+  \end{tcolorbox}
+\end{frame}
+
+%% ── Slide: The Full Journey ─────────────────────────────────────
+\begin{frame}{The Full Journey of GI}
+  \centering
+  \begin{tikzpicture}[scale=0.82, >=Stealth]
+    \draw[very thick, mGray] (0,0) -- (12,0);
+    \foreach \x/\y/\col/\lab in {
+      0/0.5/mRed/{1960s: Problem defined},
+      2.5/0.5/mPurple/{1974: Planar GI solved},
+      4.5/0.5/mBlue/{1980: Luks -- bounded degree},
+      6.5/0.5/mGreen/{1988: Schöning -- not NP-C},
+      8.5/0.5/mAccent/{1992: Sub-exp algorithm},
+      11/0.5/mGreen!70!black/{2015: Babai Breakthrough!}
+    }{
+      \fill[\col] (\x, 0) circle (4pt);
+      \draw[\col, thick] (\x,0) -- (\x, \y);
+      \node[\col, font=\tiny, align=center, above] at (\x, \y) {\lab};
+    }
+    \node[font=\small\bfseries, mGray] at (6, -0.4) {Timeline of Major Results};
+  \end{tikzpicture}
+\end{frame}
+
+%% ── Slide: The Big Picture Summary ─────────────────────────────
+\begin{frame}{Summary — The \alert{Big Picture}}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[defbox, title={What is GI?}]
+      Determining if two graphs share the same structure via a bijection $f: V_G \to V_H$.
+    \end{tcolorbox}
+
+    \vspace{0.4em}
+    \begin{tcolorbox}[keybox, title={Where does it live?}]
+      NP-Intermediate — harder than P, almost certainly easier than NP-Complete.
+    \end{tcolorbox}
+
+    \vspace{0.4em}
+    \begin{tcolorbox}[greenbox, title={Best algorithm?}]
+      Babai (2015): $2^{O((\log n)^c)}$ — quasi-polynomial.
+    \end{tcolorbox}
+
+    \column{0.5\textwidth}
+    \begin{tcolorbox}[defbox, title={Practical solution?}]
+      Weisfeiler-Lehman colour refinement — polynomial, works on almost all real graphs.
+    \end{tcolorbox}
+
+    \vspace{0.4em}
+    \begin{tcolorbox}[redbox, title={Open question?}]
+      Is GI $\in$ P? Nobody knows. Still an active frontier.
+    \end{tcolorbox}
+
+    \vspace{0.4em}
+    \begin{tcolorbox}[keybox, title={Real-world uses?}]
+      Chemistry, circuits, code, AI/GNNs, networks.
+    \end{tcolorbox}
+  \end{columns}
+\end{frame}
+
+%% ── Slide: Key Takeaway ─────────────────────────────────────────
+\begin{frame}{The \alert{Key Takeaway}}
+  \vspace{0.5em}
+  \centering
+  \begin{tcolorbox}[keybox, width=0.9\textwidth]
+    \centering\Large
+    \textbf{"In theory, Graph Isomorphism\\
+    is a monster.\\[0.5em]
+    In practice, we tame the monster\\
+    with colour refinement."}
+  \end{tcolorbox}
+
+  \vspace{0.8em}
+  \begin{tikzpicture}[scale=0.78]
+    % Two isomorphic graphs side by side, with colour
+    \node[gnodew] (a) at (90:1.3)  {};
+    \node[gnodeg] (b) at (18:1.3)  {};
+    \node[gnodem] (c) at (306:1.3) {};
+    \node[gnoder] (d) at (234:1.3) {};
+    \node[gnodey] (e) at (162:1.3) {};
+    \draw[gedge](a)--(b)--(c)--(d)--(e)--(a);
+    \node[below=1.2cm] at (0,0) {\small Coloured $G$};
+
+    \draw[arrow, mAccent, very thick] (1.7,0) -- (2.5,0)
+      node[above, midway, font=\small]{$f$};
+
+    \node[gnodew] (a2) at (4.5, 0.5){};
+    \node[gnodeg] (b2) at (6.0, 0.8){};
+    \node[gnodem] (c2) at (6.8,-0.5){};
+    \node[gnoder] (d2) at (5.2,-1.0){};
+    \node[gnodey] (e2) at (3.8,-0.3){};
+    \draw[gedge](a2)--(b2)--(c2)--(d2)--(e2)--(a2);
+    \node[below=0.9cm] at (5.3,0) {\small Coloured $H$};
+  \end{tikzpicture}
+\end{frame}
+
+%% ── Q&A Slide ───────────────────────────────────────────────────
+\begin{frame}[standout]
+  \Huge \textbf{Thank You!}\\[1em]
+  \large Questions?\\[1em]
+  \normalsize
+  \faEnvelope\ \texttt{[your.email@university.edu]}\\[0.4em]
+  \faGithub\ \texttt{github.com/yourprofile}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% APPENDIX / CHEAT SHEET
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\begin{frame}{Appendix: Q\&A Cheat Sheet}
+  \textbf{Q: Is GI the same as Graph Automorphism?}\\
+  \textit{A: Related but different. Automorphism is GI with $G=H$ — finding self-symmetries.}
+
+  \vspace{0.4em}
+  \textbf{Q: How is GI used in machine learning?}\\
+  \textit{A: GNNs use WL-style aggregation. Their expressiveness is provably limited by WL.}
+
+  \vspace{0.4em}
+  \textbf{Q: Did Babai win a prize for his result?}\\
+  \textit{A: He won the Knuth Prize (2015) and it is widely regarded as a landmark result.}
+
+  \vspace{0.4em}
+  \textbf{Q: What would happen if GI were shown to be in P?}\\
+  \textit{A: It would be a major breakthrough; many subgraph problems would become faster.}
+
+  \vspace{0.4em}
+  \textbf{Q: Can quantum computers solve GI efficiently?}\\
+  \textit{A: No known quantum algorithm gives a superpolynomial speedup for GI yet.}
+\end{frame}
+
+\begin{frame}{Appendix: Key Notation Reference}
+  \centering
+  \renewcommand{\arraystretch}{1.6}
+  \begin{tabular}{cl}
+    \toprule
+    \textbf{Symbol} & \textbf{Meaning} \\
+    \midrule
+    $G = (V, E)$       & Graph with vertex set $V$, edge set $E$ \\
+    $G \cong H$        & $G$ and $H$ are isomorphic \\
+    $f: V_G \to V_H$   & Bijection (the isomorphism mapping) \\
+    $n$                & Number of vertices ($|V|$) \\
+    $n!$               & Factorial — number of brute-force mappings \\
+    $O(n^k)$           & Polynomial time \\
+    $2^{O((\log n)^c)}$& Quasi-polynomial time (Babai) \\
+    $\deg(v)$          & Degree of vertex $v$ \\
+    WL                 & Weisfeiler-Lehman test \\
+    CFI                & Cai-Fürer-Immerman adversarial graphs \\
+    \bottomrule
+  \end{tabular}
 \end{frame}
 
 \end{document}
